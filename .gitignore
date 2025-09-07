@@ -1,2 +1,7 @@
 /.idea
 
+node_modules/
+tasks/deps/
+dist/
+coverage/
+
