@@ -36,7 +36,7 @@ done < <(mount | grep -e '^/[^/]' | cut -d'(' -f -1 | sed 's/ type .*//' | cut -
 
 # Select data cards for backup.
 if [ ${#cards[@]} -eq 0 ]; then
-	echo "No data cards found." >&2
+	echo "No mounted data cards found." >&2
 	exit 1
 fi
 selected=$(\
