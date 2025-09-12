@@ -49,7 +49,7 @@ selected=$(\
     $((7 + ${#cards[@]} / 3)) \
     50 \
     ${#cards[@]} \
-    "${cards[@]}"\
+    "${cards[@]}" \
   )
 clear
 
@@ -63,7 +63,7 @@ while IFS= read -r line; do
   IFS=':' read -r slot mount_dev mount_root <<< "$line"
   target="$output/${slot}.tar"
   echo -n "Backing up $mount_root to $target..."
-  $(cd "$mount_root" \
+  (cd "$mount_root" \
     && find . -path '*/.*' -prune -o -print \
     | tail -n +2 \
     | $tar -cf "$target" --files-from=- --no-xattrs 2>/dev/null
