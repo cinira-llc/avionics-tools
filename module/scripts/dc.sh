@@ -102,13 +102,13 @@ if [ -z "$cards_selected" ]; then
 fi
 
 # Determine the number of XZ compression threads to use per process, (#cpu - 1) / #cards.
-card_count=$(wc -l <<< "$cards_selected")
+card_count=$(wc -l <<< "$cards_selected" | xargs)
 xz_threads=$((($(cpu_count) - 1) / $card_count))
 while IFS= read -r line; do
     IFS=',' read -r mount_point archive_name mount_dev mount_options <<< "$line"
     target="$(pwd)/$archive_name.tar.xz"
     (cd "$mount_point" \
-        && find . -type f -print \
+        && find . -type f -print 2>/dev/null \
         | sed '/\/\./d' \
         | { echo "./.gadm.meta" ; cat ; } \
         | $tar -c --files-from=- --no-xattrs --owner=0 --group=0 2>/dev/null \
