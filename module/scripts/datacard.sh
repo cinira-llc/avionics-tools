@@ -1,4 +1,55 @@
 #!/usr/bin/env bash
+set -o errexit
+set -o nounset
+set -o pipefail
+NAME="${BASH_SOURCE[0]}"
+BIN="$(cd -- "$(dirname -- "${NAME}")" &>/dev/null && pwd)"
+readonly BIN
+
+. "${BIN}/_mount.sh"
+
+function print_help() {
+    cat <<EOF
+Usage: $(basename "${NAME}") [output_directory]
+
+Back up Garmin G1000 data cards to the specified output directory.
+If no output directory is specified, a timestamped directory is created
+in the current working directory.
+EOF
+}
+
+# Parse command line options.
+lock_options=0
+if [[ $# -eq 0 ]]; then
+    print_help
+    exit 0
+fi
+for arg in "$@"; do
+    if [[ $lock_options -eq 1 ]]; then
+        echo $arg
+        continue
+    else
+        case $arg in
+            --)
+                lock_options=1
+                ;;
+            -h|--help)
+                print_help
+                exit 0
+                ;;
+            -i|--image)
+                echo "Error: The -i/--image option is not supported." >&2
+                exit 1
+                ;;
+            *)
+                echo $arg
+                ;;
+        esac
+    fi
+done
+
+_mounts
+exit 0
 
 # GNU vs. BSD tar produce wildly different archives, insist on GNU tar.
 if command -v gtar >/dev/null 2>&1; then

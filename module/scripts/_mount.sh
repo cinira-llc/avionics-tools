@@ -1,22 +1,21 @@
 #!/usr/bin/env bash
-readonly home=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-
-. "${home}/_platform.sh"
+includes=("_platform.sh")
+for include in "${includes[@]}"; do
+    include_path=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)/$include
+    if [ ! -f "$include_path" ]; then
+        echo "Error: Missing include file '$include'." >&2
+        exit 1
+    fi
+    . "$include_path"
+done
 
 # List all mounted filesystems. Three lines emitted per filesystem: device, mount point, options. Works on Linux and
 # macOS; options are surrounded by ':', whitespace removed, e.g. ":rw:seclabel:". Read-only flags are normalized to
-# ":ro:".
-function _mounts() {
+# ":ro:". FS type on Linux is appended to options, e.g. ":rw:ext4:", this final field is empty ("::") on macOS, which
+# already includes the FS type elsewhere in options.
+function mounts() {
     mount \
         | sed -E 's#[(),] ?#:#g' \
         | sed -E 's#:read-only:#:ro:#g' \
-        | perl -ne 's/^(.*) on (.*?)( type \S+)? (.*)$/"$1"\n"$2"\n$4/g; print;'
-}
-
-function mount_points {
-    local mounts=()
-    while IFS= read -r line; do
-        IFS=' ' read -r mount_dev mount_root <<< "$line"
-        printf '"%s" "%s"\n' "$mount_dev" "$mount_root"
-    done < <(_mounts)
+        | perl -ne 's/^(.*) on (.*?)( type (\S+))? (:.*)$/$1\n$2\n$5$4:/g; print;'
 }

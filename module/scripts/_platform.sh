@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-readonly home=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 function is_platform_windows() {
   case "$OSTYPE" in
