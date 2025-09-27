@@ -112,12 +112,12 @@ while IFS= read -r line; do
         | sed '/\/\./d' \
         | { echo "./.gadm.meta" ; cat ; } \
         | $tar -c --files-from=- --no-xattrs --owner=0 --group=0 2>/dev/null \
-        | xz --extreme --threads=$xz_threads --stdout - > "$target"
+        | xz --extreme --threads=$xz_threads --stdout - > "$target" \
     ) &
 done <<< "$cards_selected"
 
 # Wait for all background processes to complete.
 clear
-echo -n "Backing up $card_count selected data card(s)..."
+echo -n "Backing up $card_count data card(s)..."
 wait
 echo " Done."
