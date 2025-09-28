@@ -1,13 +1,3 @@
-#!/usr/bin/env bash
-includes=("_platform.sh" "_mount.sh")
-for include in "${includes[@]}"; do
-    include_path=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)/$include
-    if [ ! -f "$include_path" ]; then
-        echo "Error: Missing include file '$include'." >&2
-        exit 1
-    fi
-    . "$include_path"
-done
 
 function print_help() {
     cat <<EOF
@@ -33,10 +23,6 @@ for arg in "$@"; do
             -h|--help)
                 print_help
                 exit 0
-                ;;
-            -i|--image)
-                echo "Error: The -i/--image option is not supported." >&2
-                exit 1
                 ;;
             *)
                 echo $arg

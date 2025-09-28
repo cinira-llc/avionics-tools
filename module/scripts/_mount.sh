@@ -1,13 +1,3 @@
-#!/usr/bin/env bash
-includes=("_platform.sh")
-for include in "${includes[@]}"; do
-    include_path=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)/$include
-    if [ ! -f "$include_path" ]; then
-        echo "Error: Missing include file '$include'." >&2
-        exit 1
-    fi
-    . "$include_path"
-done
 
 # List all mounted filesystems. Three lines emitted per filesystem: device, mount point, options. Works on Linux and
 # macOS; options are surrounded by ':', whitespace removed, e.g. ":rw:seclabel:". Read-only flags are normalized to
