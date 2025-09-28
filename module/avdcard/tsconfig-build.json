@@ -1,9 +1,0 @@
-/* Note: This file is used by the build process only, it is not seen by the IDE. Only configuration that would otherwise
-cause the IDE to misbehave should be done here. */
-{
-  "extends": "./tsconfig.json",
-  "exclude": [
-    "__tests__",
-    "*.ts"
-  ]
-}
